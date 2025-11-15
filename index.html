@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>UNDETALLIS — Mensajes Secuenciales</title>
+<title>UNDETALLIS — Secuencial</title>
 
-<!-- Google tag (gtag.js) -->
+<!-- Google tag -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3GFTY2SWSM"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -29,6 +29,7 @@
         box-sizing: border-box;
     }
 
+    /* Fondo */
     #fondo {
         position: fixed;
         top: 0;
@@ -38,54 +39,51 @@
         background-image: url('assets/fondo.jpg');
         background-size: cover;
         background-position: center;
-        animation: wiggle 1s infinite ease-in-out alternate;
-        filter: blur(2px);
+        animation: fondoMovimiento 2.5s infinite ease-in-out alternate;
+        filter: blur(4px) brightness(0.8);
         z-index: -1;
     }
 
-    @keyframes wiggle {
-        0%   { transform: translate(-1.5px, -1.5px) scale(1.015); }
-        25%  { transform: translate(1.5px, -1px) scale(1.01); }
-        50%  { transform: translate(-1px, 1.5px) scale(1.015); }
-        75%  { transform: translate(1px, 1px) scale(1.01); }
-        100% { transform: translate(-1.5px, 1px) scale(1.015); }
+    @keyframes fondoMovimiento {
+        0% { transform: scale(1.02) translate(-8px, -5px); }
+        100% { transform: scale(1.06) translate(6px, 5px); }
     }
 
-    @keyframes aparecer {
-        0% { opacity: 0; transform: scale(0.7); filter: blur(5px); }
-        100% { opacity: 1; transform: scale(1); }
+    /* Texto con rebote */
+    @keyframes rebote {
+        0%   { opacity: 0; transform: scale(0.6); filter: blur(4px); }
+        40%  { opacity: 1; transform: scale(1.05); }
+        70%  { transform: scale(0.95); }
+        100% { transform: scale(1); filter: blur(0); }
     }
 
-    @keyframes suaveTexto {
-        0% { transform: translateY(0px); }
-        100% { transform: translateY(4px); }
-    }
-
+    /* Caja de frase */
     #fraseBox {
+        max-width: 90%;
+        padding: 35px 45px;
+        background: white;
+        color: black;
+        font-size: 38px;
+        font-weight: 900; /* MÁS GORDITO */
+        border-radius: 24px;
+        text-align: center;
+        line-height: 1.25;
+
+        box-shadow: 0 0 30px rgba(0,0,0,0.45);
+
         display: flex;
         justify-content: center;
         align-items: center;
-        text-align: center;
 
-        animation: 
-            aparecer 0.7s ease-out,
-            suaveTexto 1.6s ease-in-out infinite alternate;
+        animation: rebote 0.8s ease-out;
 
-        max-width: 88%;
-        padding: 25px 35px;
-        background: white;
-        color: black;
-        font-size: 30px;
-        font-weight: bold;
-        border-radius: 18px;
-        box-shadow: 0 0 20px rgba(0,0,0,0.3), 0 0 40px rgba(0,0,0,0.2);
-        position: relative;
+        backdrop-filter: blur(6px);
     }
 
     @media (max-width: 600px) {
         #fraseBox {
-            font-size: 22px;
-            padding: 18px 24px;
+            font-size: 28px;
+            padding: 25px 30px;
         }
     }
 </style>
@@ -108,9 +106,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    /* =======================
-       AQUÍ VAN TUS 120 FRASES
-       ======================= */
+    /* ===== TUS 120 FRASES ===== */
     const frases = [
 "¿Quién fue tu último crush?",
 "¿Qué es lo primero que notas en alguien?",
@@ -233,17 +229,23 @@
 "¿Qué es lo más honesto que te han dicho?",
 "¿Qué te da miedo que descubran de ti?",
 "¿Qué momento de tu vida repetirías?"
-];
+    ];
 
     async function cargarFrase() {
+        const box = document.getElementById("fraseBox");
+
         const orderRef = ref(db, "globalOrder");
-
         const snapshot = await get(orderRef);
-        let index = snapshot.exists() ? snapshot.val() : 0;
 
+        let index = snapshot.exists() ? snapshot.val() : 0;
         const frase = frases[index] ?? "Error: frase no encontrada";
 
-        document.getElementById("fraseBox").innerText = frase;
+        box.textContent = frase;
+
+        /* Reiniciar animación rebote */
+        box.style.animation = "none";
+        void box.offsetWidth;
+        box.style.animation = "rebote 0.8s ease-out";
 
         index = (index + 1) % frases.length;
         set(orderRef, index);
