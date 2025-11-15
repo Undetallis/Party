@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>UNDETALLIS — Secuencial</title>
+<title>UNDETALLIS — Aleatorio Sin Repetir</title>
 
-<!-- Google tag -->
+<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3GFTY2SWSM"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -28,8 +28,6 @@
         padding: 20px;
         box-sizing: border-box;
     }
-
-    /* Fondo */
     #fondo {
         position: fixed;
         top: 0;
@@ -43,43 +41,33 @@
         filter: blur(4px) brightness(0.8);
         z-index: -1;
     }
-
     @keyframes fondoMovimiento {
         0% { transform: scale(1.02) translate(-8px, -5px); }
         100% { transform: scale(1.06) translate(6px, 5px); }
     }
-
-    /* Texto con rebote */
     @keyframes rebote {
         0%   { opacity: 0; transform: scale(0.6); filter: blur(4px); }
-        40%  { opacity: 1; transform: scale(1.05); }
-        70%  { transform: scale(0.95); }
+        40%  { opacity: 1; transform: scale(1.08); }
+        70%  { transform: scale(0.94); }
         100% { transform: scale(1); filter: blur(0); }
     }
-
-    /* Caja de frase */
     #fraseBox {
         max-width: 90%;
         padding: 35px 45px;
         background: white;
         color: black;
         font-size: 38px;
-        font-weight: 900; /* MÁS GORDITO */
+        font-weight: 900;
         border-radius: 24px;
         text-align: center;
         line-height: 1.25;
-
         box-shadow: 0 0 30px rgba(0,0,0,0.45);
-
         display: flex;
         justify-content: center;
         align-items: center;
-
         animation: rebote 0.8s ease-out;
-
         backdrop-filter: blur(6px);
     }
-
     @media (max-width: 600px) {
         #fraseBox {
             font-size: 28px;
@@ -88,121 +76,158 @@
     }
 </style>
 
+<!-- ===================== -->
+<!--   FIREBASE + LÓGICA   -->
+<!-- ===================== -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
     import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyCJ8sSO65rTjF04Dl7VMEuhrLj_Z9yAICs",
-      authDomain: "undetallis.firebaseapp.com",
-      databaseURL: "https://undetallis-default-rtdb.firebaseio.com",
-      projectId: "undetallis",
-      storageBucket: "undetallis.firebasestorage.app",
-      messagingSenderId: "60709183880",
-      appId: "1:60709183880:web:c7751f216ca7f5ad381a3d",
-      measurementId: "G-5ZQY4JZBGX"
+      apiKey: "AIzaSyBJjxw3ONW_WvUgTKeHALYdmUjTOXB0gFs",
+      authDomain: "spicy-da7d7.firebaseapp.com",
+      projectId: "spicy-da7d7",
+      storageBucket: "spicy-da7d7.firebasestorage.app",
+      messagingSenderId: "8855941044",
+      appId: "1:8855941044:web:3607c0d43293fbc6490ce1",
+      measurementId: "G-K5GK8HR3BE"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    /* ===== TUS 120 FRASES ===== */
+    /* ----------------------------- */
+    /*      TUS 80 FRASES            */
+    /* ----------------------------- */
     const frases = [
-"El último que toque el piso toma doble.",
-  "Si has dicho 'yo no tomo' alguna vez, toma ahora.",
-  "Todos los que tienen ex tóxico, tomen.",
-  "Si has llorado tomando, shot obligatorio.",
-  "Los que llegaron tarde, tomen por irresponsables.",
-  "Si tienes más de 3 chats archivados, toma.",
-  "Todos los solteros, arriba los vasos.",
-  "Si tienes un crush aquí, discretamente toma.",
-  "Los que dijeron que solo tomarían 'un ratico', shot.",
-  "Si tu outfit es negro, toma.",
-  "El que esté más sobrio debe tomar ahora.",
-  "Si te han ghosteado este mes, toma sin pensarlo.",
-  "Los que vinieron sin permiso, tomen.",
-  "Si alguien te cae mal aquí, shot silencioso.",
-  "Los que han dicho 'ya estoy bien', tomen otra vez.",
-  "Si tienes más de 50 notas de voz guardadas, toma.",
-  "Si borraste mensajes hoy, toma por eso.",
-  "El que tenga el celular en 20% o menos, toma.",
-  "Si te gusta alguien que no te gusta, shot.",
-  "Todos los que usan perfume caro, tomen.",
-  "Si has stalkeado hoy, toma.",
-  "Los que tienen miedo al compromiso, shot profundo.",
-  "Si te han dejado en visto, brinda por eso.",
-  "Si alguien te debe plata, toma por coraje.",
-  "Todos los que dijeron 'hoy no tomo', shot irónico.",
-  "Si tu ex te habló esta semana, toma por estrés.",
-  "Si te has enamorado por WhatsApp, shot romántico.",
-  "Todos los que tienen risa fea, tomen con orgullo.",
-  "Si tienes foto con tu ex aún, shot de vergüenza.",
-  "Si usas stickers pasivo-agresivos, toma.",
-  "Los que tienen la playlist secreta, tomen.",
-  "Si borraste una historia hoy, toma.",
-  "Si has stalkeado un perfil privado, shot por detective.",
-  "Los que tienen más de dos quedantes tomen sin llorar.",
-  "Si tienes una canción prohibida, toma.",
-  "Si te han dicho 'qué intensa', doble shot.",
-  "Si eres el que arma el drama siempre, toma y disfruta.",
-  "El último en levantar la mano, shot.",
-  "Los que están pensando en su ex… ustedes ya saben.",
-  "Si has enviado '¿qué haces?' sin razón, shot.",
-  "Si tienes una foto que no puedes borrar, toma.",
-  "Si has stalkeado cuentas viejas, shot arqueológico.",
-  "Todos los que no tienen filtro al tomar, tomen.",
-  "Si has mandado nota de voz borracho, shot obligado.",
-  "Los que tienen celos de mentiritas, tomen suave.",
-  "Si has tratado de impresionar a tu crush, toma.",
-  "Si dijiste 'no me acuerdo' después de una fiesta, shot.",
-  "Si necesitas alcohol para hablar, toma ahora.",
-  "Si te gusta alguien aquí, toma disimuladamente.",
-  "Todos los que no beben agua, shot por irresponsables.",
-  "Si dijiste 'solo una', toma la cuarta.",
-  "Los que tienen la cámara frontal traumada, tomen.",
-  "Si has dicho 'mi celular me odia', shot.",
-  "Si te da cringe tu yo del 2020, toma.",
-  "Si odias madrugar, toma.",
-  "Si fuiste el más problemático del colegio, shot épico.",
-  "Si has dicho 'no vuelvo a tomar', toma por mentiroso.",
-  "Los románticos intensos, tomen.",
-  "Si tus amigos te cargan borracho, shot de agradecimiento.",
-  "Si alguna vez has prometido amor eterno borracho, toma.",
-  "Si nunca recuerdas cómo llegaste a casa, shot misterioso.",
-  "Si eres el DJ de la fiesta, toma por presión social.",
-  "Los que bailan feo pero bailan, tomen.",
-  "Si has perdido algo tomando, shot triste.",
-  "Si ya te estás calentando, toma para nivelar.",
-  "Si te tomaste fotos que no subirás, shot artístico.",
-  "Si no sabes qué haces aquí, toma igual.",
-  "Si te encanta el caos, toma por eso.",
-  "Si tienes ganas de llorar con música, shot musical.",
-  "Si ya estás sintiendo el guaro, toma suave.",
-  "Si no sientes nada aún, toma fuerte.",
-  "Si alguien te gusta desde hace rato, shot valiente.",
-  "Los que se enamoran fácil, tomen sin pena.",
-  "Los que extrañan a alguien, tomen profundo.",
-  "Todos los que están felices hoy, tomen por eso."
+"Yo nunca nunca he besado a alguien en una fiesta",
+"Yo nunca nunca he tenido un crush en alguien del grupo",
+"Yo nunca nunca he enviado un mensaje que luego me arrepentí",
+"Yo nunca nunca he dado un beso sorpresa",
+"Yo nunca nunca he coqueteado sin intención",
+"Yo nunca nunca he tenido una cita fallida",
+"Yo nunca nunca he perdido una apuesta de manera vergonzosa",
+"Yo nunca nunca he tenido un apodo raro",
+"Yo nunca nunca he sido descubierto haciendo algo travieso",
+"Yo nunca nunca he leído mensajes ajenos",
+"Yo nunca nunca he stalkeado a alguien en redes sociales",
+"Yo nunca nunca he mentido para impresionar",
+"Yo nunca nunca he hecho un cumplido por compromiso",
+"Yo nunca nunca he salido con alguien por aburrimiento",
+"Yo nunca nunca he jugado a provocar a alguien",
+"Yo nunca nunca he hecho un comentario que no debía",
+"Yo nunca nunca he mandado un meme demasiado atrevido",
+"Yo nunca nunca he sido rechazado de forma graciosa",
+"Yo nunca nunca he tenido una cita improvisada",
+"Yo nunca nunca he tenido un crush secreto prolongado",
+"Yo nunca nunca he dicho “yo no fui” sabiendo que sí",
+"Yo nunca nunca he roto una regla solo por diversión",
+"Yo nunca nunca he tenido una noche que prefiero no recordar",
+"Yo nunca nunca he jugado a la botella",
+"Yo nunca nunca he hecho un reto ridículo",
+"Yo nunca nunca he tenido un enamoramiento fugaz",
+"Yo nunca nunca he enviado un mensaje que no era para esa persona",
+"Yo nunca nunca he inventado una excusa para irme de una cita",
+"Yo nunca nunca he tenido celos sin razón",
+"Yo nunca nunca he buscado llamar la atención de alguien",
+"Yo nunca nunca he vivido un momento incómodo por un crush",
+"Yo nunca nunca he confesado algo bajo presión",
+"Yo nunca nunca he usado una mentira piadosa",
+"Yo nunca nunca he ido a una fiesta sin ser invitado",
+"Yo nunca nunca he hecho una entrada dramática",
+"Yo nunca nunca he fingido no ver a alguien",
+"Yo nunca nunca he tenido un hobby raro",
+"Yo nunca nunca he hecho reír al grupo sin querer",
+"Yo nunca nunca he dicho algo que solo entendió una persona",
+"Yo nunca nunca he escrito una carta que nunca envié",
+"Yo nunca nunca he tenido una amistad que parecía algo más",
+"Yo nunca nunca he tenido un plan que salió totalmente mal",
+"Yo nunca nunca he enviado un audio demasiado largo",
+"Yo nunca nunca he hecho algo solo por curiosidad",
+"Yo nunca nunca he salido huyendo de un lugar incómodo",
+"Yo nunca nunca he dicho “solo una copa” y no fue solo una",
+"Yo nunca nunca he bailado sin música",
+"Yo nunca nunca he perdido algo importante por despiste",
+"Yo nunca nunca he fingido entender una conversación",
+"Yo nunca nunca he tenido una salida espontánea a medianoche",
+"Yo nunca nunca he dicho que estaba bien cuando no lo estaba",
+"Yo nunca nunca he llorado de risa",
+"Yo nunca nunca he hecho que alguien se ponga nervioso",
+"Yo nunca nunca he cambiado de opinión en el último segundo",
+"Yo nunca nunca he sido el último en enterarse de algo",
+"Yo nunca nunca he hecho un regalo improvisado",
+"Yo nunca nunca he sentido mariposas sin querer",
+"Yo nunca nunca he tenido un favorito en secreto",
+"Yo nunca nunca he tenido un día tan raro que parecía inventado",
+"Yo nunca nunca he cometido un error gracioso en público",
+"Yo nunca nunca he querido que el tiempo se detenga",
+"Yo nunca nunca he tenido una conversación sospechosamente intensa",
+"Yo nunca nunca he enviado un mensaje a medianoche sin pensarlo",
+"Yo nunca nunca he hecho un comentario ambiguo a propósito",
+"Yo nunca nunca he guardado un recuerdo “por si acaso”",
+"Yo nunca nunca he tenido una mirada que dijo más que mis palabras",
+"Yo nunca nunca he esperado un mensaje que nunca llegó",
+"Yo nunca nunca he dejado a alguien con la duda a propósito",
+"Yo nunca nunca he terminado riendo en un momento serio",
+"Yo nunca nunca he dejado un like accidental",
+"Yo nunca nunca he competido por atención sin querer",
+"Yo nunca nunca he hecho una promesa que no cumplí",
+"Yo nunca nunca he jugado a ver quién se atreve más",
+"Yo nunca nunca he sentido química instantánea",
+"Yo nunca nunca he hecho un comentario que cambió la energía del momento",
+"Yo nunca nunca he tenido una idea loca que sí llevé a cabo",
+"Yo nunca nunca he tenido un presentimiento acertado",
+"Yo nunca nunca he recibido una indirecta muy directa",
+"Yo nunca nunca he sido parte de un secreto grupal",
+"Yo nunca nunca he tenido una noche que empezó tranquila y terminó inolvidable"
     ];
+
+    /* Barajar array */
+    function mezclar(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
 
     async function cargarFrase() {
         const box = document.getElementById("fraseBox");
 
-        const orderRef = ref(db, "globalOrder");
-        const snapshot = await get(orderRef);
+        const ordenRef = ref(db, "orden");
+        const posRef   = ref(db, "pos");
 
-        let index = snapshot.exists() ? snapshot.val() : 0;
-        const frase = frases[index] ?? "Error: frase no encontrada";
+        const ordenSnap = await get(ordenRef);
+        const posSnap   = await get(posRef);
 
+        let orden = ordenSnap.exists() ? ordenSnap.val() : null;
+        let pos = posSnap.exists() ? posSnap.val() : 0;
+
+        if (!orden || orden.length !== frases.length) {
+            orden = [...Array(frases.length).keys()];
+            mezclar(orden);
+            await set(ordenRef, orden);
+            pos = 0;
+            await set(posRef, 0);
+        }
+
+        const frase = frases[orden[pos]];
         box.textContent = frase;
 
-        /* Reiniciar animación rebote */
         box.style.animation = "none";
         void box.offsetWidth;
         box.style.animation = "rebote 0.8s ease-out";
 
-        index = (index + 1) % frases.length;
-        set(orderRef, index);
+        pos++;
+
+        if (pos >= frases.length) {
+            orden = [...Array(frases.length).keys()];
+            mezclar(orden);
+            pos = 0;
+            await set(ordenRef, orden);
+        }
+
+        await set(posRef, pos);
     }
 
     window.onload = cargarFrase;
